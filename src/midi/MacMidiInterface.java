@@ -1,14 +1,20 @@
 package midi;
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 
-import de.humatic.mmj.MidiOutput;
-import de.humatic.mmj.MidiSystem;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiDevice.Info;
 
 public class MacMidiInterface implements MidiInterface {
 	private int channel = 1;
 	
-	MidiOutput out;
+	MidiDevice out;
+
+	private Receiver receiver;
 	
 	/* (non-Javadoc)
 	 * @see MidiInterface#killNotes()
@@ -39,8 +45,25 @@ public class MacMidiInterface implements MidiInterface {
 		this.channel = channel;
 	}
 
-	public MacMidiInterface() {
-		out = MidiSystem.openMidiOutput(0);
+	public MacMidiInterface() throws MidiUnavailableException {
+		System.out.println("have " + MidiSystem.getMidiDeviceInfo().length + " devices");
+		Info info = null;
+		for (Info output : MidiSystem.getMidiDeviceInfo()) {
+			System.out.println("have device " + output.getName());
+			if (MidiSystem.getMidiDevice(output).getMaxReceivers() != 0) {
+				info = output;
+				System.out.println("using device for output " + output.getName());
+			}
+		}
+		
+		
+		out = MidiSystem.getMidiDevice(info);
+        try{
+            out.open();
+            receiver = out.getReceiver();
+	    }catch (MidiUnavailableException mue){
+            System.out.println("can't open MidiOut : " +mue.toString());
+	    }
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +75,13 @@ public class MacMidiInterface implements MidiInterface {
 		ShortMessage msg = new ShortMessage();
 		try {
 			msg.setMessage(ShortMessage.NOTE_ON, channel, note, velocity);
-			out.sendMidi(msg.getMessage());
+			
+			try {
+				out.getReceiver().send(msg,0);
+			} catch (MidiUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 //			msg.setMessage(ShortMessage.NOTE_OFF, channel, note, velocity);
 //			out.sendMidi(msg.getMessage());
 		} catch (InvalidMidiDataException imde) {

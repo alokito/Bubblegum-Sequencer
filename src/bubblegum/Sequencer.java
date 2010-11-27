@@ -35,6 +35,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -188,7 +189,11 @@ public class Sequencer extends JFrame implements Runnable {
 	}
 
 	private void initGui() {
-		setLayout(new FlowLayout());
+		
+		JPanel middle = new JPanel();
+		
+		
+		//middle.setLayout(new FlowLayout());
 
 		// Setup menu.
 		JMenuBar mb = new JMenuBar();
@@ -225,7 +230,7 @@ public class Sequencer extends JFrame implements Runnable {
 		videoPanel.add(new JLabel(new ImageIcon(original.getImage())));
 		videoPanel.add(new JLabel("Processed"));
 		videoPanel.add(new JLabel(new ImageIcon(processed.getImage())));
-		add(videoPanel);
+		middle.add(videoPanel);
 
 		// Add settings sliders.
 		JPanel settingsPanel = new JPanel();
@@ -382,8 +387,8 @@ public class Sequencer extends JFrame implements Runnable {
 		// gridStateArea.setSize(200, 100);
 		// settingsPanel.add(gridStateArea);
 
-		add(settingsPanel);
-
+		middle.add(settingsPanel);
+		add(new JScrollPane(middle));
 		setSize(800, 600);
 		pack();
 		setVisible(true);
