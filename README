@@ -1,0 +1,15 @@
+Bubblegum Sequencer
+
+This is a fork of  http://bubblegumsequencer.googlecode.com/svn, which doesn't seem to be updated much.
+
+=== DEPENDENCIES ===
+At this level, you will need to add the following libraries:
+
+- ij.jar (ImageJ; http://rsbweb.nih.gov/ij/download.html)
+
+For Mac users:
+- put mmj.jar and libmmj.jnilib in the lib folder (3rd party MIDI support; http://www.humatic.de/htools/mmj.htm)
+- make sure to add to classpath in eclipse or whatever
+
+If you want to use an Arduino for tempo input or blinking LEDs:
+- rxtx-2.1.7.jar
